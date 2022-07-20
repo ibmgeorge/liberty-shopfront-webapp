@@ -3,48 +3,125 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>liberty-shopfront-webapp</groupId>
-    <artifactId>liberty-shopfront-webapp</artifactId>
+    <artifactId>frontend</artifactId>
     <packaging>war</packaging>
     <version>1.0</version>
-    <name>liberty-shopfront-webapp</name>
-  
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
-    	<maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <!-- Liberty configuration -->
+        <!-- tag::default-http-port[] -->
+        <liberty.var.default.http.port>9080</liberty.var.default.http.port>
+        <!-- end::default-http-port[] -->
+        <liberty.var.default.https.port>9443</liberty.var.default.https.port>
+        <liberty.var.app.context.root>${project.artifactId}</liberty.var.app.context.root>
     </properties>
-    
+
+    <!-- tag::dependencies[] -->
     <dependencies>
+        <!-- Provided dependencies -->
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>9.1.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile</groupId>
+            <artifactId>microprofile</artifactId>
+            <version>5.0</version>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+        <!-- For testing -->
+        <!-- tag::commons-httpclient[] -->
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- end::commons-httpclient[] -->
+        <!-- tag::junit[] -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- end::junit[] -->
     </dependencies>
-
-<profiles>
-    <profile>
-     <!-- When built in OpenShift the 'openshift' profile will be used when invoking mvn. -->
-     <!-- Use this profile for any OpenShift specific customization your app will need. -->
-     <!-- By default that is to put the resulting archive into the 'deployments' folder. -->
-     <!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
-     <id>openshift</id>
-     <build>
-        <finalName>liberty-shopfront-webapp</finalName>
+    <!-- end::dependencies[] -->
+    <!-- tag::build[] -->
+    <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
-          <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.3.2</version>
+            </plugin>
+            <!-- tag::liberty-maven-plugin[] -->
+            <plugin>
+                <groupId>io.openliberty.tools</groupId>
+                <artifactId>liberty-maven-plugin</artifactId>
+                <version>3.6.1</version>
+                <!-- tag::configuration[] -->
                 <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <outputDirectory>target</outputDirectory>
-              		  <warName>frontend</warName>
+                    <!-- tag::serverName[] -->
+                    <serverName>defaultServer</serverName>
+                    <!-- end::serverName[] -->
+                </configuration>
+                <!-- end::configuration[] -->
+            </plugin>
+            <!-- end::liberty-maven-plugin[] -->
+            <!-- tag::maven-failsafe-plugin[] -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                    <!-- tag::system-property-variables[] -->
+                    <systemPropertyVariables>
+                        <!-- tag::http-port[] -->
+                        <http.port>${liberty.var.default.http.port}</http.port>
+                        <!-- end::http-port[] -->
+                        <!-- tag::war-name[] -->
+                        <war.name>${liberty.var.app.context.root}</war.name>
+                        <!-- end::war-name[] -->
+                    </systemPropertyVariables>
+                    <!-- end::system-property-variables[] -->
                 </configuration>
             </plugin>
+            <!-- end::maven-failsafe-plugin[] -->
         </plugins>
-      </build>
-    </profile>
-  </profiles>
+    </build>
+    <!-- end::build[] -->
+    <profiles>
+        <profile>
+            <!-- When built in OpenShift the 'openshift' profile will be used when invoking mvn. -->
+            <!-- Use this profile for any OpenShift specific customization your app will need. -->
+            <!-- By default that is to put the resulting archive into the 'deployments' folder. -->
+            <!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
+            <id>openshift</id>
+            <build>
+                <finalName>liberty-shopfront-webapp</finalName>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>3.3.2</version>
+                        <configuration>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                            <outputDirectory>target</outputDirectory>
+                            <warName>frontend</warName>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
