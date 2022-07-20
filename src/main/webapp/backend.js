@@ -62,9 +62,10 @@ $(function () {
         if (act) {
             timer = setInterval(() => {
                 var i = Math.floor(Math.random() * 100);
-                if (i <= 30)
+                if (i <= 30) {
                     update("phonebookServlet?lname=" + lastNameList[i % lastNameList.length], $('#imsMessage'));
-                else if (i <= 60)
+                    ineum('user', lastNameList[i % lastNameList.length], null, null);
+                } else if (i <= 60)
                     update("accountServlet?account=" + accountList[i % accountList.length], $('#cicsMessage'));
                 else {
                     items = $('#items-table > tbody > tr');
