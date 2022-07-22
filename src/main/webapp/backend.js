@@ -46,7 +46,7 @@ function updateSingleItem(id) {
         .then(res => res.json())
         .then((data) => {
             $('#items-table > tbody > tr').removeClass("table-primary");
-            $('#' + id).fadeOut().fadeIn().addClass("table-primary");
+            $('#' + id).clearQueue().fadeOut().fadeIn().addClass("table-primary");
         })
 }
 
@@ -86,6 +86,7 @@ function update(url, obj) {
         .then((response) => response.text())
         .then((html) => {
             obj.addClass("table-primary");
+            obj.clearQueue();
             obj.fadeOut().html(html).fadeIn();
             obj.removeClass("table-primary");
         })
