@@ -38,13 +38,17 @@ public class AccountServiceServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String accountID = request.getParameter("account");
-		if (accountID == null || "".equalsIgnoreCase(accountID))
+		if (accountID == null || "".equals(accountID))
 			accountID = "[EMPTY]";
+		String originID = request.getParameter("channel");
+		if (originID == null || "".equals(originID))
+			originID = "IBANK";
 		URL endpoint = new URL(baseUrl + accountID);
 		HttpURLConnection connection = (HttpURLConnection) endpoint.openConnection();
 		connection.setRequestMethod("GET");
 		connection.setRequestProperty("Content-Type", "application/json");
 		connection.setRequestProperty("Authorization", authHeader);
+		connection.setRequestProperty("ORIGIN-ID", originID);
 		int responseCode = connection.getResponseCode();
 		if (responseCode == HttpURLConnection.HTTP_OK) {
 			BufferedReader in = new BufferedReader(new InputStreamReader(
