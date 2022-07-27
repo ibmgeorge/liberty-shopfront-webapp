@@ -47,7 +47,7 @@ function updateSingleItem(id) {
         .then(res => res.json())
         .then((data) => {
             $('#items-table > tbody > tr').removeClass("table-primary");
-            $('#' + id).clearQueue().fadeOut().fadeIn().addClass("table-primary");
+            $('#' + id).fadeOut().fadeIn().addClass("table-primary");
         })
 }
 
@@ -57,9 +57,12 @@ $(function () {
         $('#btnLoadCICS').text('Loading').addClass('disabled');
         listCICSItems(catalogUrl);
     });
+    $('#switchSlowTxn').click(function () {
+        $('#switchSlowTxn').prop('disabled', true);
+    });
     $('#switchRobot').click(function () {
         var act = $('#switchRobot').prop('checked');
-        console.log("Robot status " + act);
+        $('#switchSlowTxn').prop('disabled', !act);
         if (act) {
             timer = setInterval(() => {
                 var i = Math.floor(Math.random() * 100);
@@ -67,15 +70,21 @@ $(function () {
                     update("phonebookServlet?lname=" + lastNameList[i % lastNameList.length], $('#imsMessage'));
                     ineum('user', lastNameList[i % lastNameList.length], null, null);
                 } else if (i <= 60)
-                    update("accountServlet?channel=" + channelList[i % channelList.length] + "&account=" + accountList[i % accountList.length], $('#cicsMessage'));
+                    if ($('#switchSlowTxn').prop('checked')) {
+                        update("accountServlet?channel=" + channelList[i % channelList.length] + "&account=SLOWACCT", $('#cicsMessage'));
+                        $('#switchSlowTxn').prop('disabled', false).prop('checked', false);
+                    } else
+                        update("accountServlet?channel=" + channelList[i % channelList.length] + "&account=" + accountList[i % accountList.length], $('#cicsMessage'));
                 else {
                     items = $('#items-table > tbody > tr');
                     selected = $(items[Math.floor(Math.random() * items.length)]).attr("id");
                     updateSingleItem(selected);
                 }
             }, 2000);
-        } else
+        } else {
+            $('#switchSlowTxn').prop('disabled', true);
             clearInterval(timer);
+        }
     });
     listCICSItems(catalogUrl);
     update("phonebookServlet?lname=GE", $('#imsMessage'));
@@ -87,7 +96,7 @@ function update(url, obj) {
         .then((response) => response.text())
         .then((html) => {
             obj.addClass("table-primary");
-            obj.clearQueue();
+            //obj.clearQueue().fadeIn();
             obj.fadeOut().html(html).fadeIn();
             obj.removeClass("table-primary");
         })

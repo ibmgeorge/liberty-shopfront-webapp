@@ -28,25 +28,32 @@
   </div>
   <div class="container">
     <div class="row">
-      <div class="col-1">
-        <p><span class="badge bg-success">CICS QueryAcct</span></p>
+      <div class="col-xxl-1 col-2">
+        <p><span class="badge bg-success">CICS Query Acct</span></p>
       </div>
-      <div class="col-5">
+      <div class="col-6">
         <p id="cicsMessage">LOADING...</p>
       </div>
-      <div class="col-1">
-        <p><span class="badge bg-primary">IMS Phonebook</span></p>
-      </div>
       <div class="col">
-        <p id="imsMessage">LOADING...</p>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="switchSlowTxn" disabled>
+          <label class="form-check-label" for="switchSlowTxn">Trigger Slow Txn</label>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="container">
-    <!-- Default checked -->
-    <div class="form-check form-switch">
-      <input class="form-check-input" type="checkbox" role="switch" id="switchRobot">
-      <label class="form-check-label" for="switchRobot">Deploy Robot</label>
+    <div class="row">
+      <div class="col-xxl-1 col-2">
+        <p><span class="badge bg-primary">IMS PhoneBook</span></p>
+      </div>
+      <div class="col-6">
+        <p id="imsMessage">LOADING...</p>
+      </div>
+      <div class="col">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="switchRobot">
+          <label class="form-check-label" for="switchRobot">Deploy Robot</label>
+        </div>
+      </div>
     </div>
   </div>
   <div class="container">
