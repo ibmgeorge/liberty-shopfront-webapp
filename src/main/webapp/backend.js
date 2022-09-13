@@ -80,7 +80,7 @@ $(function () {
                     selected = $(items[Math.floor(Math.random() * items.length)]).attr("id");
                     updateSingleItem(selected);
                 }
-            }, 2000);
+            }, 1000);
         } else {
             $('#switchSlowTxn').prop('disabled', true);
             clearInterval(timer);
